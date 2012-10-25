@@ -13,14 +13,24 @@ puts "Neighbors: #{neighbors}"
 
 server = TCPServer.new id
 
+def send_to(neighbors, msg)
+	host = 'localhost'
+	neighbors.each {|neighbor|
+		puts "#{neighbor}"
+		socket = TCPSocket.open(host, neighbor)
+		socket.puts("#{msg}\r\n")
+		puts "#{Time.now}: #{msg}"
+		socket.close
+	}
+end
+
 loop do
 	Thread.start(server.accept) do |socket|
 		begin
 			requestMsg = socket.gets
 			puts "#{Time.now}: #{requestMsg}"
 			responseMsg = JSON.generate({"responseMsg"=>'Hello.', "senderId"=> id})
-			socket.puts responseMsg
-			puts "#{Time.now}: #{responseMsg}"
+			send_to(neighbors, responseMsg)
 		rescue
 			puts "#{$!}"
 		ensure
