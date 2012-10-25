@@ -3,7 +3,7 @@
 require 'socket'
 require 'json'
 
-abort("Usage: node.rb ID [NEIGHBOR_IDs]") unless ARGV.size() > 1
+abort("Usage: #{__FILE__} ID [NEIGHBOR_IDs]") unless ARGV.size() > 0
 
 id = ARGV[0]
 neighbors = ARGV.slice(1, ARGV.size() -1)

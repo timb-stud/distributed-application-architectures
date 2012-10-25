@@ -1,11 +1,9 @@
 require 'socket'
 
-abort("Usage: dm.rb ID MSG") unless ARGV.size() == 2
+abort("Usage: #{__FILE__} ID MSG") unless ARGV.size() == 2
 
 id = ARGV[0]
 msg = ARGV[1]
-
-
 
 host = 'localhost'
 
