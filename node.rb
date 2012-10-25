@@ -21,9 +21,9 @@ loop do
 			responseMsg = JSON.generate({"responseMsg"=>'Hello.', "senderId"=> id})
 			socket.puts responseMsg
 			puts "#{Time.now}: #{responseMsg}"
-			socket.close
 		rescue
 			puts "#{$!}"
+		ensure
 			socket.close
 		end
 	end
