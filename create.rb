@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'pp'
-
 abort("Usage: #{__FILE__} somegraph.dot") unless ARGV.size() == 1
 
 fileName = ARGV[0]
@@ -24,10 +22,8 @@ begin
 			else
 				nodesHash[nodes[1]] = [nodes[0]]
 			end
-			pp(nodes)
 		end
 	end
-	pp(nodesHash)
 
 	nodesHash.each {|key, value|
 		fork do
