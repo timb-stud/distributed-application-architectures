@@ -10,7 +10,7 @@ NAME = ARGV[0]
 
 neighbors = ARGV.slice(1, ARGV.size() -1)
 
-puts "ID: #{NAME} Neighbors: #{neighbors.join(" ")}"
+puts "Bot #{NAME} has #{neighbors.size()} neighbors: #{neighbors.join(", ")}."
 
 server = TCPServer.new(NAME) 
 
@@ -20,9 +20,9 @@ def send(destination, action)
 		msgHash = {'sender'=>NAME, 'destination'=>destination, 'action'=>action}
 		msg = JSON.generate(msgHash)
 		socket.puts("#{msg}\r\n")
-		puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} >>> #{msg}"
+		puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} >>> #{destination} (#{action}) | #{msg}"
 	rescue
-		puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} ::: #{$!}"
+		puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} eee                     | #{$!}"
 	ensure
 		if(socket != nil)
 			socket.close
@@ -38,16 +38,16 @@ loop do
 	Thread.start(server.accept) do |socket|
 		begin
 			requestString = socket.gets
-			puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} <<< #{requestString}"
 			requestHash = JSON.parse(requestString)
+			puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} <<< #{requestHash['sender']} (#{requestHash['action']}) | #{requestString}"
 			if(isForMe(requestHash))
 				neighbors.each {|neighbor|
 					if(neighbor != requestHash['sender'])
-						send(neighbor, "quit")
+						send(neighbor, requestHash['action'])
 					end
 				}
-				if(requestHash['action'] == 'quit')
-						puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} ::: Shutting down."
+				if(requestHash['action'] == 'killyourself')
+						puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} ☠☠☠                     | I am dead now."
 						abort()
 				end
 			end
