@@ -9,7 +9,7 @@ id = ARGV[0]
 neighbors = ARGV.slice(1, ARGV.size() -1)
 
 puts "ID: #{id}"
-puts "Neighbors: #{neighbors}"
+puts "Neighbors: #{neighbors.join(" ")}"
 
 server = TCPServer.new id
 
