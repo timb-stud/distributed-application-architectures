@@ -1,13 +1,20 @@
 require 'socket'
+require 'pp'
+require 'json'
 
-abort("Usage: #{__FILE__} ID MSG") unless ARGV.size() == 2
+abort("Usage: #{__FILE__} SENDER DESTINATION ACTION") unless ARGV.size() == 3
 
-id = ARGV[0]
-msg = ARGV[1]
+SENDER = ARGV[0]
+DESTINATION = ARGV[1]
+ACTION = ARGV[2]
 
-host = 'localhost'
+HOST = 'localhost'
 
-socket = TCPSocket.open(host, id)
-socket.puts("#{msg}\r\n")
+msg = {'sender'=>SENDER, 'destination'=>DESTINATION, 'action'=>ACTION}
+puts "#{pp(msg)}"
+
+socket = TCPSocket.open(HOST, DESTINATION)
+socket.puts("#{JSON.generate(msg)}\r\n")
 response = socket.read
 puts response
+socket.close
