@@ -27,7 +27,7 @@ begin
 
 	nodesHash.each {|key, value|
 		fork do
-			exec "ruby node.rb #{key} #{value.join(' ')} &"
+			exec "ruby robot.rb #{key} #{value.join(' ')} &"
 		end
 	}
 rescue
