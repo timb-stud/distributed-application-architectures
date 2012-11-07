@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# Creates graphviz output containing a given number of nodes.
+
 abort("Usage: #{__FILE__} NODES") unless ARGV.size() == 1
 
 NODES = Integer(ARGV[0])

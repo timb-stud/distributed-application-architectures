@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# Reads the given graphviz file and creates robot processes with the same connections as the nodes in the graph.
+
 abort("Usage: #{__FILE__} somegraph.dot") unless ARGV.size() == 1
 
 fileName = ARGV[0]
