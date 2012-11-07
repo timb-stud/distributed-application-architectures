@@ -7,6 +7,7 @@ abort("Usage: #{__FILE__} ID [NEIGHBOR_IDs]") unless ARGV.size() > 0
 
 HOST = 'localhost'
 NAME = ARGV[0]
+sendIdFlag = false
 
 neighbors = ARGV.slice(1, ARGV.size() -1)
 
@@ -41,14 +42,21 @@ loop do
 			requestHash = JSON.parse(requestString)
 			puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} <<< #{requestHash['sender']} (#{requestHash['action']}) | #{requestString}"
 			if(isForMe(requestHash))
-				neighbors.each {|neighbor|
-					if(neighbor != requestHash['sender'])
-						send(neighbor, requestHash['action'])
-					end
-				}
 				if(requestHash['action'] == 'killyourself')
-						puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} ☠☠☠                     | I am dead now."
-						abort()
+					neighbors.each {|neighbor|
+						if(neighbor != requestHash['sender'])
+							send(neighbor, requestHash['action'])
+						end
+					}
+					abort("#{Time.now.strftime("%H:%M:%S")} | #{NAME} ☠☠☠                     | I am dead now.")
+				end
+				if(!sendIdFlag)
+					sendIdFlag = true
+					neighbors.each {|neighbor|
+						if(neighbor != requestHash['sender'])
+							send(neighbor, requestHash['action'])
+						end
+					}
 				end
 			end
 		rescue StandardError => e
