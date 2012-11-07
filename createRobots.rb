@@ -12,15 +12,21 @@ begin
 		match = line.match(/(\d\d\d\d)\ *--\ *\d\d\d\d/)
 		if (match)
 			nodes = match[0].split(/\ *--\ */)
-			if(nodesHash[nodes[0]])
-				nodesHash[nodes[0]] << nodes[1]
-			else
-				nodesHash[nodes[0]] = [nodes[1]]
-			end
-			if(nodesHash[nodes[1]])
-				nodesHash[nodes[1]] << nodes[0]
-			else
-				nodesHash[nodes[1]] = [nodes[0]]
+			if(nodes.length === 2 && nodes[0] != nodes[1])
+				if(nodesHash[nodes[0]])
+					unless(nodesHash[nodes[0]].include?(nodes[1]))
+						nodesHash[nodes[0]] << nodes[1]
+					end
+				else
+					nodesHash[nodes[0]] = [nodes[1]]
+				end
+				if(nodesHash[nodes[1]])
+					unless(nodesHash[nodes[1]].include?(nodes[0]))
+						nodesHash[nodes[1]] << nodes[0]
+					end
+				else
+					nodesHash[nodes[1]] = [nodes[0]]
+				end
 			end
 		end
 	end
