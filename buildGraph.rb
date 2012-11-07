@@ -14,7 +14,6 @@ end
 while nodesHash.length < NODES
 	nodeLeft = randId()
 	nodeRight = randId()
-	#puts "#{nodeLeft} #{nodeRight} #{(nodesHash[nodeRight] != nil)} #{!(nodesHash[nodeRight] && nodesHash[nodeRight].include?(nodeLeft))}"
 	if(nodeLeft != nodeRight && !(nodesHash[nodeRight] && nodesHash[nodeRight].include?(nodeLeft)))
 		if(nodesHash[nodeLeft])
 			unless(nodesHash[nodeLeft].include?(nodeRight))
