@@ -13,9 +13,13 @@ abort("Usage: #{__FILE__} ID [NEIGHBOR_IDs]") unless ARGV.size() > 0
 
 HOST = 'localhost'
 NAME = ARGV[0]
+
 sendIdFlag = false
 
 neighbors = ARGV.slice(1, ARGV.size() -1)
+
+msgCounter = neighbors.size()
+accountBalance = rand(1000)
 
 puts "Bot #{NAME} has #{neighbors.size()} neighbors: #{neighbors.join(", ")}."
 
