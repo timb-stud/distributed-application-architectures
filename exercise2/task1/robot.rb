@@ -35,9 +35,9 @@ def send(destination, action, additionalAttributes)
 		end
 		msg = JSON.generate(msgHash)
 		socket.puts("#{msg}\r\n")
-		puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} >>> #{destination} (#{action}) | #{msg}"
-	rescue
-		puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} eee                     | #{$!}"
+		logSend(destination, action, msg)
+	rescue StandardError => e
+		logError(e)
 		return false
 	ensure
 		if(socket != nil)
@@ -55,20 +55,56 @@ def randomNeighbor()
 	return NEIGHBORS.at(rand(NEIGHBORS.size()))
 end
 
+def logError(e)
+	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} eee      | #{e.backtrace}"
+end
+
+def logInfo()
+	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} iii      | #{$accountBalance}$"
+end
+
+def logKill()
+	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} ☠☠☠      | I am dead now."
+end
+
+def logSend(destination, action, msg)
+	actionChar = ">"
+	case action
+		when ACTION_KILLYOURSELF
+			actionChar = "☠"
+		when ACTION_MONEYTRANSACTION
+			actionChar = "$"
+	end
+	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} >#{actionChar}> #{destination} | #{msg}"
+end
+
+def logReceive(sender, action, msg)
+	actionChar = ">"
+	case action
+		when ACTION_KILLYOURSELF
+			actionChar = "☠"
+		when ACTION_MONEYTRANSACTION
+			actionChar = "$"
+	end
+	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} <#{actionChar}< #{sender} | #{msg}"
+end
+
+
 def doActionKillyourself(sender)
 	NEIGHBORS.each {|neighbor|
 		if(neighbor != sender)
 			send(neighbor, ACTION_KILLYOURSELF, nil)
 		end
 	}
-	puts ("#{Time.now.strftime("%H:%M:%S")} | #{NAME} iii                     | account balance: #{$accountBalance}")
-	abort("#{Time.now.strftime("%H:%M:%S")} | #{NAME} ☠☠☠                     | I am dead now.")
+	logInfo()
+	logKill()
+	abort()
 end
 
 def doActionMoneyTransaction(incomingMoneyAmount)
-	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} iii                         | account balance: #{$accountBalance}"
+	logInfo()
 	$accountBalance += incomingMoneyAmount
-	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} iii                         | account balance: #{$accountBalance}"
+	logInfo()
 	$msgCounter.times do
 		outgoingMoneyAmount = 1 + rand(10)
 		if(send(randomNeighbor(), ACTION_MONEYTRANSACTION, {'moneyAmount'=> outgoingMoneyAmount}))
@@ -76,7 +112,7 @@ def doActionMoneyTransaction(incomingMoneyAmount)
 		end
 	end
 	$msgCounter -= 1
-	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} iii                         | account balance: #{$accountBalance}"
+	logInfo()
 end
 
 loop do
@@ -86,7 +122,7 @@ loop do
 			requestHash = JSON.parse(requestString)
 			sender = requestHash['sender']
 			action = requestHash['action']
-			puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} <<< #{sender} (#{action}) | #{requestString}"
+			logReceive(sender, action, requestString)
 			if(isForMe(requestHash))
 				if(action == ACTION_KILLYOURSELF)
 					doActionKillyourself(sender)
@@ -97,7 +133,7 @@ loop do
 				end
 			end
 		rescue StandardError => e
-			puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} eee #{e.backtrace}"
+			logError(e);
 		ensure
 			socket.close
 		end
