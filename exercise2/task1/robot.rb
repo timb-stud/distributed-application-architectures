@@ -14,14 +14,14 @@ abort("Usage: #{__FILE__} ID [NEIGHBOR_IDs]") unless ARGV.size() > 0
 HOST = 'localhost'
 NAME = ARGV[0]
 
-sendIdFlag = false
+ACTION_KILLYOURSELF = 'killyourself'
 
-neighbors = ARGV.slice(1, ARGV.size() -1)
+NEIGHBORS = ARGV.slice(1, ARGV.size() -1)
 
-msgCounter = neighbors.size()
+msgCounter = NEIGHBORS.size()
 accountBalance = rand(1000)
 
-puts "Bot #{NAME} has #{neighbors.size()} neighbors: #{neighbors.join(", ")}."
+puts "Bot #{NAME} has #{NEIGHBORS.size()} neighbors: #{NEIGHBORS.join(", ")}."
 
 server = TCPServer.new(NAME) 
 
@@ -45,28 +45,26 @@ def isForMe(msg)
 	return msg['destination'] == NAME
 end
 
+def doActionKillyourself(sender)
+	NEIGHBORS.each {|neighbor|
+		if(neighbor != sender)
+			send(neighbor, ACTION_KILLYOURSELF)
+		end
+	}
+	abort("#{Time.now.strftime("%H:%M:%S")} | #{NAME} ☠☠☠                     | I am dead now.")
+end
+
 loop do
 	Thread.start(server.accept) do |socket|
 		begin
 			requestString = socket.gets
 			requestHash = JSON.parse(requestString)
-			puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} <<< #{requestHash['sender']} (#{requestHash['action']}) | #{requestString}"
+			sender = requestHash['sender']
+			action = requestHash['action']
+			puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} <<< #{sender} (#{action}) | #{requestString}"
 			if(isForMe(requestHash))
-				if(requestHash['action'] == 'killyourself')
-					neighbors.each {|neighbor|
-						if(neighbor != requestHash['sender'])
-							send(neighbor, requestHash['action'])
-						end
-					}
-					abort("#{Time.now.strftime("%H:%M:%S")} | #{NAME} ☠☠☠                     | I am dead now.")
-				end
-				if(!sendIdFlag)
-					sendIdFlag = true
-					neighbors.each {|neighbor|
-						if(neighbor != requestHash['sender'])
-							send(neighbor, requestHash['action'])
-						end
-					}
+				if(action == ACTION_KILLYOURSELF)
+					doActionKillyourself(sender)
 				end
 			end
 		rescue StandardError => e
