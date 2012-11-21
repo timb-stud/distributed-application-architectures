@@ -3,31 +3,22 @@
 require 'socket'
 require 'json'
 
-# A robot that waits for incoming messages.
-# (The first received message gets sent to all neigbors.)
-#
-# Messages:
-# 	- killyourself : send this message to all your neighbors and kill your own process
+# Add comments
 
 abort("Usage: #{__FILE__} ID [NEIGHBOR_IDs]") unless ARGV.size() > 0
 
 HOST = 'localhost'
 NAME = ARGV[0]
+SERVER = TCPServer.new(NAME)
 NEIGHBORS = ARGV.slice(1, ARGV.size() -1)
 
-ACTION_KILLYOURSELF = 'killyourself'
-ACTION_MONEYTRANSACTION = 'moneytransaction'
 ACTION_MSGCOUNT = 'msgcount'
-
-$msgCounter = NEIGHBORS.size()
-$accountBalance = 1000
 
 $sendMessages = 0
 $receivedMessages = 0
 
 puts "Bot #{NAME} has #{NEIGHBORS.size()} neighbors: #{NEIGHBORS.join(", ")}."
 
-server = TCPServer.new(NAME) 
 
 def send(destination, action, additionalAttributes)
 	begin
@@ -39,7 +30,6 @@ def send(destination, action, additionalAttributes)
 		msg = JSON.generate(msgHash)
 		socket.puts("#{msg}\r\n")
 		logSend(destination, action, msg)
-		$sendMessages += 1
 	rescue StandardError => e
 		logError(e)
 		return false
@@ -64,7 +54,7 @@ def logError(e)
 end
 
 def logInfo()
-	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} iii      | #{$accountBalance}$"
+	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} iii      | s:#{$sendMessages} r: #{$receivedMessages}"
 end
 
 def logKill()
@@ -74,10 +64,6 @@ end
 def logSend(destination, action, msg)
 	actionChar = ">"
 	case action
-		when ACTION_KILLYOURSELF
-			actionChar = "☠"
-		when ACTION_MONEYTRANSACTION
-			actionChar = "$"
 		when ACTION_MSGCOUNT
 			actionChar = "#"
 	end
@@ -87,10 +73,6 @@ end
 def logReceive(sender, action, msg)
 	actionChar = "<"
 	case action
-		when ACTION_KILLYOURSELF
-			actionChar = "☠"
-		when ACTION_MONEYTRANSACTION
-			actionChar = "$"
 		when ACTION_MSGCOUNT
 			actionChar = "#"
 	end
@@ -98,37 +80,18 @@ def logReceive(sender, action, msg)
 end
 
 
-def doActionKillyourself(sender)
-	NEIGHBORS.each {|neighbor|
-		if(neighbor != sender)
-			send(neighbor, ACTION_KILLYOURSELF, nil)
-		end
-	}
-	logInfo()
-	logKill()
-	abort()
-end
-
-def doActionMoneyTransaction(incomingMoneyAmount)
-	logInfo()
-	$accountBalance += incomingMoneyAmount
-	logInfo()
-	$msgCounter.times do
-		outgoingMoneyAmount = 1 + rand(10)
-		if(send(randomNeighbor(), ACTION_MONEYTRANSACTION, {'moneyAmount'=> outgoingMoneyAmount}))
-			$accountBalance -= outgoingMoneyAmount
-		end
-	end
-	$msgCounter -= 1
+def doActionMsgcount(sendMessages, receivedMessages)
+	$sendMessages += sendMessages
+	$receivedMessages += receivedMessages
 	logInfo()
 end
 
-def doActionMsgcount(sender)
-	send(sender, ACTION_MSGCOUNT, {'received' => $receivedMessages, 'send' => $sendMessages})
-end
+NEIGHBORS.each{|neighbor|
+	send(neighbor, ACTION_MSGCOUNT, nil)
+}
 
 loop do
-	Thread.start(server.accept) do |socket|
+	Thread.start(SERVER.accept) do |socket|
 		begin
 			requestString = socket.gets
 			requestHash = JSON.parse(requestString)
@@ -136,14 +99,10 @@ loop do
 			action = requestHash['action']
 			logReceive(sender, action, requestString)
 			if(isForMe(requestHash))
-				$receivedMessages += 1
-				if(action == ACTION_KILLYOURSELF)
-					doActionKillyourself(sender)
-				elsif(action == ACTION_MONEYTRANSACTION && requestHash.has_key?('moneyAmount'))
-					incomingMoneyAmount = Integer(requestHash['moneyAmount'])
-					doActionMoneyTransaction(incomingMoneyAmount)
-				elsif(action == ACTION_MSGCOUNT)
-					doActionMsgcount(sender)
+				if(action == ACTION_MSGCOUNT && requestHash.has_key?('received') && requestHash.has_key?('send'))
+					receivedMessages = Integer(requestHash['received'])
+					sendMessages = Integer(requestHash['send'])
+					doActionMsgcount(receivedMessages, sendMessages)
 				end
 			end
 		rescue StandardError => e
