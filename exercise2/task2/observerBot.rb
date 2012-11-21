@@ -102,7 +102,7 @@ loop do
 				if(action == ACTION_MSGCOUNT && requestHash.has_key?('received') && requestHash.has_key?('send'))
 					receivedMessages = Integer(requestHash['received'])
 					sendMessages = Integer(requestHash['send'])
-					doActionMsgcount(receivedMessages, sendMessages)
+					doActionMsgcount(sendMessages, receivedMessages)
 				end
 			end
 		rescue StandardError => e
