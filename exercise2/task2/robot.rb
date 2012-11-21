@@ -39,7 +39,6 @@ def send(destination, action, additionalAttributes)
 		msg = JSON.generate(msgHash)
 		socket.puts("#{msg}\r\n")
 		logSend(destination, action, msg)
-		$sendMessages += 1
 	rescue StandardError => e
 		logError(e)
 		return false
@@ -99,9 +98,12 @@ end
 
 
 def doActionKillyourself(sender)
+	$receivedMessages += 1
 	NEIGHBORS.each {|neighbor|
 		if(neighbor != sender)
-			send(neighbor, ACTION_KILLYOURSELF, nil)
+			if(send(neighbor, ACTION_KILLYOURSELF, nil))
+				$sendMessages += 1
+			end
 		end
 	}
 	logInfo()
@@ -110,12 +112,14 @@ def doActionKillyourself(sender)
 end
 
 def doActionMoneyTransaction(incomingMoneyAmount)
+	$receivedMessages += 1
 	logInfo()
 	$accountBalance += incomingMoneyAmount
 	logInfo()
 	$msgCounter.times do
 		outgoingMoneyAmount = 1 + rand(10)
 		if(send(randomNeighbor(), ACTION_MONEYTRANSACTION, {'moneyAmount'=> outgoingMoneyAmount}))
+			$sendMessages += 1
 			$accountBalance -= outgoingMoneyAmount
 		end
 	end
@@ -136,7 +140,6 @@ loop do
 			action = requestHash['action']
 			logReceive(sender, action, requestString)
 			if(isForMe(requestHash))
-				$receivedMessages += 1
 				if(action == ACTION_KILLYOURSELF)
 					doActionKillyourself(sender)
 				elsif(action == ACTION_MONEYTRANSACTION && requestHash.has_key?('moneyAmount'))
