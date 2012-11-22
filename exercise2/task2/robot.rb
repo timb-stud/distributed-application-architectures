@@ -67,8 +67,8 @@ def logKill()
 	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} ☠☠☠      | I am dead now."
 end
 
-def logSend(destination, action, msg)
-	actionChar = ">"
+def logAction(sender, action, msg, char)
+	actionChar = char
 	case action
 		when Actions::KILLYOURSELF
 			actionChar = "☠"
@@ -77,22 +77,16 @@ def logSend(destination, action, msg)
 		when Actions::MSGCOUNT
 			actionChar = "#"
 	end
-	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} >#{actionChar}> #{destination} | #{msg}"
+	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} #{char}#{actionChar}#{char} #{sender} | #{msg}"
+end
+
+def logSend(destination, action, msg)
+	logAction(destination, action, msg, ">")
 end
 
 def logReceive(sender, action, msg)
-	actionChar = "<"
-	case action
-		when Actions::KILLYOURSELF
-			actionChar = "☠"
-		when Actions::MONEYTRANSACTION
-			actionChar = "$"
-		when Actions::MSGCOUNT
-			actionChar = "#"
-	end
-	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} <#{actionChar}< #{sender} | #{msg}"
+	logAction(sender, action, msg, "<")
 end
-
 
 def doActionKillyourself(sender)
 	$receivedMessages += 1
