@@ -2,6 +2,7 @@
 
 require 'socket'
 require 'json'
+require 'actions.rb'
 
 # A robot that waits for incoming messages.
 # (The first received message gets sent to all neigbors.)
@@ -14,10 +15,6 @@ abort("Usage: #{__FILE__} ID [NEIGHBOR_IDs]") unless ARGV.size() > 0
 HOST = 'localhost'
 NAME = ARGV[0]
 NEIGHBORS = ARGV.slice(1, ARGV.size() -1)
-
-ACTION_KILLYOURSELF = 'killyourself'
-ACTION_MONEYTRANSACTION = 'moneytransaction'
-ACTION_MSGCOUNT = 'msgcount'
 
 $msgCounter = NEIGHBORS.size()
 $accountBalance = 1000
@@ -73,11 +70,11 @@ end
 def logSend(destination, action, msg)
 	actionChar = ">"
 	case action
-		when ACTION_KILLYOURSELF
+		when Actions::KILLYOURSELF
 			actionChar = "☠"
-		when ACTION_MONEYTRANSACTION
+		when Actions::MONEYTRANSACTION
 			actionChar = "$"
-		when ACTION_MSGCOUNT
+		when Actions::MSGCOUNT
 			actionChar = "#"
 	end
 	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} >#{actionChar}> #{destination} | #{msg}"
@@ -86,11 +83,11 @@ end
 def logReceive(sender, action, msg)
 	actionChar = "<"
 	case action
-		when ACTION_KILLYOURSELF
+		when Actions::KILLYOURSELF
 			actionChar = "☠"
-		when ACTION_MONEYTRANSACTION
+		when Actions::MONEYTRANSACTION
 			actionChar = "$"
-		when ACTION_MSGCOUNT
+		when Actions::MSGCOUNT
 			actionChar = "#"
 	end
 	puts "#{Time.now.strftime("%H:%M:%S")} | #{NAME} <#{actionChar}< #{sender} | #{msg}"
@@ -101,7 +98,7 @@ def doActionKillyourself(sender)
 	$receivedMessages += 1
 	NEIGHBORS.each {|neighbor|
 		if(neighbor != sender)
-			if(send(neighbor, ACTION_KILLYOURSELF, nil))
+			if(send(neighbor, Actions::KILLYOURSELF, nil))
 				$sendMessages += 1
 			end
 		end
@@ -118,7 +115,7 @@ def doActionMoneyTransaction(incomingMoneyAmount)
 	logInfo()
 	$msgCounter.times do
 		outgoingMoneyAmount = 1 + rand(10)
-		if(send(randomNeighbor(), ACTION_MONEYTRANSACTION, {'moneyAmount'=> outgoingMoneyAmount}))
+		if(send(randomNeighbor(), Actions::MONEYTRANSACTION, {'moneyAmount'=> outgoingMoneyAmount}))
 			$sendMessages += 1
 			$accountBalance -= outgoingMoneyAmount
 		end
@@ -128,7 +125,7 @@ def doActionMoneyTransaction(incomingMoneyAmount)
 end
 
 def doActionMsgcount(sender)
-	send(sender, ACTION_MSGCOUNT, {'received' => $receivedMessages, 'send' => $sendMessages})
+	send(sender, Actions::MSGCOUNT, {'received' => $receivedMessages, 'send' => $sendMessages})
 end
 
 loop do
@@ -140,12 +137,12 @@ loop do
 			action = requestHash['action']
 			logReceive(sender, action, requestString)
 			if(isForMe(requestHash))
-				if(action == ACTION_KILLYOURSELF)
+				if(action == Actions::KILLYOURSELF)
 					doActionKillyourself(sender)
-				elsif(action == ACTION_MONEYTRANSACTION && requestHash.has_key?('moneyAmount'))
+				elsif(action == Actions::MONEYTRANSACTION && requestHash.has_key?('moneyAmount'))
 					incomingMoneyAmount = Integer(requestHash['moneyAmount'])
 					doActionMoneyTransaction(incomingMoneyAmount)
-				elsif(action == ACTION_MSGCOUNT)
+				elsif(action == Actions::MSGCOUNT)
 					doActionMsgcount(sender)
 				end
 			end
