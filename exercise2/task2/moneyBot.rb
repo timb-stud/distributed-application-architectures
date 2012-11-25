@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'lib/observerBot.rb'
+require 'lib/moneyBot.rb'
 
 # A robot that waits for incoming messages.
 # (The first received message gets sent to all neigbors.)
@@ -16,21 +16,5 @@ NEIGHBORS = ARGV.slice(1, ARGV.size() -1)
 
 puts "Bot #{NAME} has #{NEIGHBORS.size()} neighbors: #{NEIGHBORS.join(", ")}."
 
-
-$oldSendSum = -1
-$oldReceivedSum = -1
-
-def callback(sendSum, receivedSum)
-	if(sendSum == $oldSendSum && receivedSum == $oldReceivedSum)
-		puts "Result: (sendSum: #{sendSum}) (receivedSum: #{receivedSum})"
-	else
-		$oldSendSum = sendSum
-		$oldReceivedSum = receivedSum
-		puts "Let's try it again."
-		$robot.observe()
-	end
-end
-
-$robot = ObserverBot.new(NAME, NEIGHBORS, method(:callback))
-$robot.observe()
-$robot.start()
+robot = MoneyBot.new(NAME, NEIGHBORS, 1000)
+robot.start()

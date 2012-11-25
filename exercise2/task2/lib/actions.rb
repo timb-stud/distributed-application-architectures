@@ -1,4 +1,3 @@
-
 module Actions
 	KILLYOURSELF = 'killyourself'
 	MONEYTRANSACTION = 'moneytransaction'

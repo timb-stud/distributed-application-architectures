@@ -35,7 +35,7 @@ begin
 
 	nodesHash.each {|key, value|
 		fork do
-			exec "ruby robot.rb #{key} #{value.join(' ')} &"
+			exec "ruby moneyBot.rb #{key} #{value.join(' ')} &"
 		end
 	}
 rescue
