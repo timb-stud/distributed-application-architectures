@@ -2,6 +2,7 @@
 
 require 'socket'
 require 'json'
+require 'lib/species.rb'
 
 # Sends messages to robots.
 # You have to define the sender, destination and action (e.g. killyourself).
@@ -24,7 +25,7 @@ ATTRIBUTES.each{|attribute|
 }
 
 
-msg = {'sender'=>SENDER, 'destination'=>DESTINATION, 'action'=>ACTION}
+msg = {'sender'=>SENDER, 'destination'=>DESTINATION, 'action'=>ACTION, 'species' => Species::INITIATOR}
 msg = msg.merge(attributesHash)
 json = JSON.generate(msg)
 puts "#{json}"
