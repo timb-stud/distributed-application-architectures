@@ -44,6 +44,12 @@ class Bot
 				actionChar = "$"
 			when Actions::MSGCOUNT
 				actionChar = "#"
+			when Actions::BUYSTOCKS
+				actionChar = 'B'
+			when Actions::SELLSTOCKS
+				actionChar = 'S'
+			when Actions::MARKETPRICE
+				actionChar = 'M'
 		end
 		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} #{char}#{actionChar}#{char} #{sender} | #{msg}"
 	end

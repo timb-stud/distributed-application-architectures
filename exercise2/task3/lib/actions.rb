@@ -4,4 +4,5 @@ module Actions
 	MARKETPRICE = 'marketprice'
 	BUYSTOCKS = 'buystocks'
 	SELLSTOCKS = 'sellstocks'
+	MONEYTRANSACTION = 'moneytransaction'
 end

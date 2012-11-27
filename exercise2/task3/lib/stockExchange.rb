@@ -1,13 +1,41 @@
 require 'lib/bot.rb'
 
 class StockExchange < Bot
+	
+	@@SLEEP_TIME = 3
+
 	def initialize(name, marketPrice)
 		super(name, [])
 		@marketPrice = Integer(marketPrice)
+		@marketPrices = [@marketPrice]
+		@scale = 0
+		@counter = 0
 	end
 
 	def logInfo()
-		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | #{@accountBalance}$"
+		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | market price: #{@marketPrice}$"
+		system('spark ' + @marketPrices.join(' '))
+	end
+
+	def updateMarketPrice()
+		#max = @marketPrice / 10 
+		max = 2
+		r = rand((max * 2) + 1) - max
+		@marketPrice  += r
+		@marketPrices.push(@marketPrice)
+		if(r < 0)
+			@scale -= 1
+		end
+		if(r > 0)
+			@scale += 1
+		end
+		@counter += 1
+		logInfo()
+	end
+
+	def start()
+		Thread.new { loop { updateMarketPrice(); sleep(@@SLEEP_TIME)}}
+		super.start()
 	end
 
 	# Action Handlers
@@ -27,7 +55,7 @@ class StockExchange < Bot
 		else
 			stocks =0
 		end
-		send(sender, Actions::BUYSTOCKS, {'stocks'=> stocks, 'money'=> money})
+		sendMsg(sender, Actions::BUYSTOCKS, {'stocks'=> stocks, 'money'=> money})
 	end
 	
 	def sellstocks(requestHash)
@@ -35,12 +63,12 @@ class StockExchange < Bot
 		marketPrice = Integer(requestHash['marketPrice'])
 		stocks = Integer(requestHash['stocks'])
 		if(marketPrice == @marketPrice)
-			stocks = 0
 			money = stocks * @marketPrice
+			stocks = 0
 		else
-			money =0
+			money = 0
 		end
-		send(sender, Actions::BUYSTOCKS, {'stocks'=> stocks, 'money'=> money})
+		sendMsg(sender, Actions::SELLSTOCKS, {'stocks'=> stocks, 'money'=> money})
 	end
 	
 end
