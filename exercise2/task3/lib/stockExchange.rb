@@ -8,28 +8,22 @@ class StockExchange < Bot
 		super(name, [])
 		@marketPrice = Integer(marketPrice)
 		@marketPrices = [@marketPrice]
-		@scale = 0
-		@counter = 0
+		@scatter = @marketPrice / 10
 	end
 
 	def logInfo()
 		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | market price: #{@marketPrice}$"
-		system('spark ' + @marketPrices.join(' '))
+		#system('spark ' + @marketPrices.join(' '))
 	end
 
 	def updateMarketPrice()
-		#max = @marketPrice / 10 
-		max = 2
+		max = @scatter 
 		r = rand((max * 2) + 1) - max
 		@marketPrice  += r
+		if(@marketPrice < 1)
+			@marketPrice = 1
+		end
 		@marketPrices.push(@marketPrice)
-		if(r < 0)
-			@scale -= 1
-		end
-		if(r > 0)
-			@scale += 1
-		end
-		@counter += 1
 		logInfo()
 	end
 
