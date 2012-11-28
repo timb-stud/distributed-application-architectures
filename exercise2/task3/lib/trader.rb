@@ -13,7 +13,7 @@ class Trader < Bot
 	end
 
 	def logInfo()
-		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | #{@accountBalance}$   #{@stocks} 📈  "
+		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | #{@accountBalance}$   #{@stocks}#  #{@currentMarketPrice}$  #{@currentMarketPrice * @stocks + @accountBalance}$"
 	end
 
 	def updateStocksAndMoney(requestHash)
@@ -27,17 +27,32 @@ class Trader < Bot
 		sendMsg(@stockExchange, Actions::MARKETPRICE, nil)
 	end
 
-	def buyRandom(marketPrice)
-		stocks = rand(10)
-		money = stocks * marketPrice
+	def can_buy?(marketPrice)
+		return @accountBalance > marketPrice
+	end
+
+	def can_sell?(marketPrice)
+		return @stocks > 0
+	end
+
+	def buy(marketPrice, money)
 		@accountBalance -= money
 		sendMsg(@stockExchange, Actions::BUYSTOCKS, {'marketPrice'=> marketPrice, 'money'=> money})
 	end
 
-	def sellRandom(marketPrice)
-		stocks = rand(@stocks + 1)
+	def sell(marketPrice, stocks)
 		@stocks -= stocks
 		sendMsg(@stockExchange, Actions::SELLSTOCKS, {'marketPrice'=> marketPrice, 'stocks'=> stocks})
+	end
+
+	def stocksToBuy(marketPrice)
+		max = @accountBalance / marketPrice
+		return rand(max)
+	end
+
+	def stocksToSell(marketPrice)
+		max = @stocks
+		return rand(max)
 	end
 
 	def start()
@@ -51,8 +66,14 @@ class Trader < Bot
 		marketPrice = Integer(requestHash['marketPrice'])
 		@currentMarketPrice = marketPrice
 		logInfo()
-		buyRandom(marketPrice)
-		sellRandom(marketPrice)
+		if(can_buy?(marketPrice))
+			money = stocksToBuy(marketPrice) * marketPrice
+			buy(marketPrice, money)
+		end
+		if(can_sell?(marketPrice))
+			stocks = stocksToSell(marketPrice)
+			sell(marketPrice, stocks)
+		end
 	end
 
 	def buystocks(requestHash)
