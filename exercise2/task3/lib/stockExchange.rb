@@ -13,7 +13,7 @@ class StockExchange < Bot
 
 	def logInfo()
 		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | market price: #{@marketPrice}$"
-		#system('spark ' + @marketPrices.join(' '))
+		system('spark ' + @marketPrices.join(' '))
 	end
 
 	def updateMarketPrice()
