@@ -10,6 +10,7 @@ class Trader < Bot
 		@accountBalance = Integer(accountBalance)
 		@stocks = 0
 		@currentMarketPrice
+		@marketPrices = []
 	end
 
 	def logInfo()
@@ -25,6 +26,12 @@ class Trader < Bot
 
 	def askMarketPrice()
 		sendMsg(@stockExchange, Actions::MARKETPRICE, nil)
+	end
+
+	def avgMarketPrice()
+		sum = 0
+		@marketPrices.each{|marketPrice| sum += marketPrice}
+		return sum / @marketPrices.length()
 	end
 
 	def can_buy?(marketPrice)
@@ -45,13 +52,21 @@ class Trader < Bot
 		sendMsg(@stockExchange, Actions::SELLSTOCKS, {'marketPrice'=> marketPrice, 'stocks'=> stocks})
 	end
 
-	def stocksToBuy(marketPrice)
-		max = @accountBalance / marketPrice
+	def stocksToBuy()
+		max = @accountBalance / @currentMarketPrice
+		return determineStocksToBuy(max)
+	end
+
+	def determineStocksToBuy(max)
 		return rand(max)
 	end
 
-	def stocksToSell(marketPrice)
+	def stocksToSell()
 		max = @stocks
+		return determineStocksToSell(max)
+	end
+
+	def determineStocksToSell(max)
 		return rand(max)
 	end
 
@@ -65,13 +80,14 @@ class Trader < Bot
 	def marketprice(requestHash)
 		marketPrice = Integer(requestHash['marketPrice'])
 		@currentMarketPrice = marketPrice
+		@marketPrices.push(marketPrice)
 		logInfo()
 		if(can_buy?(marketPrice))
-			money = stocksToBuy(marketPrice) * marketPrice
+			money = stocksToBuy() * marketPrice
 			buy(marketPrice, money)
 		end
 		if(can_sell?(marketPrice))
-			stocks = stocksToSell(marketPrice)
+			stocks = stocksToSell()
 			sell(marketPrice, stocks)
 		end
 	end
