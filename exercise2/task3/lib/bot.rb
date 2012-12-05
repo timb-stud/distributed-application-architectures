@@ -3,6 +3,10 @@ require 'json'
 require 'lib/actions.rb'
 require 'lib/species.rb'
 
+# Implementation of a bot that can handle follwing actions:
+#  - killyourself
+#  - msgcount
+
 class Bot
 	@@HOST = "localhost"
 	@@SPECIES = Species::ROBOT

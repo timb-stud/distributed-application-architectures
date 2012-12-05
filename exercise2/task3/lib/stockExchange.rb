@@ -1,5 +1,10 @@
 require 'lib/bot.rb'
 
+# Implementation of a StockExchange that can handle follwing actions:
+#  - sellstocks
+#  - buystocks
+#  - marketprice
+
 class StockExchange < Bot
 	
 	@@SLEEP_TIME = 3

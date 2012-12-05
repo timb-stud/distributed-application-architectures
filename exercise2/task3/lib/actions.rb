@@ -1,3 +1,5 @@
+# Collection of all Action String constants
+
 module Actions
 	KILLYOURSELF = 'killyourself'
 	MSGCOUNT = 'msgcount'

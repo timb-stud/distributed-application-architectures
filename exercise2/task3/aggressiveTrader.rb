@@ -2,11 +2,7 @@
 
 require 'lib/aggressiveTrader.rb'
 
-# A robot that waits for incoming messages.
-# (The first received message gets sent to all neigbors.)
-#
-# Messages:
-# 	- killyourself : send this message to all your neighbors and kill your own process
+# Skript for starting agressive Traders
 
 abort("Usage: #{__FILE__} ID STOCK_EXCHANGE_ID ACCOUNT_BALANCE") unless ARGV.size() == 3
 

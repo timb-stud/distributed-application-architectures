@@ -1,5 +1,10 @@
 require 'lib/bot.rb'
 
+# Implementation of a Trader that can handle follwing actions:
+#  - sellstocks
+#  - buystocks
+#  - marketprice
+
 class Trader < Bot
 
 	@@SLEEP_TIME = 2
