@@ -20,10 +20,10 @@ Stock Exchange & Traders.
 - New trader types (besides aggressive & relaxed) are easy to implement. (You just need to implement 2 functions)
 
 ### Create Stock Exchange
-ruby stockExchange.rb 2000 100
+`ruby stockExchange.rb 2000 100`
 
 ### Create relaxed trader
-ruby relaxedTrader.rb 2001 2000 10000
+`ruby relaxedTrader.rb 2001 2000 10000`
 
 ### Create aggressive trader
-ruby aggressiveTrader.rb 2002 2000 10000
+`ruby aggressiveTrader.rb 2002 2000 10000`
