@@ -62,7 +62,9 @@ class EchoBot < Bot
 				logInfo()
 				@color = "white"
 			else
-				sendMsg(@firstNeighbor, Actions::ECHO, {'maxId' => @maxId})
+				if(!@firstNeighbor.empty?)
+					sendMsg(@firstNeighbor, Actions::ECHO, {'maxId' => @maxId})
+				end
 				@color = "white"
 			end
 		end
