@@ -12,6 +12,14 @@ class EchoBot < Bot
 		@isInitiator = false
 	end
 
+	def reset()
+		@maxId = @id
+		@color = "white"
+		@counter = 0
+		@firstNeighbor = ""
+		@isInitiator = false
+	end
+
 	def colorize(text, color)
 		color_map = {
 			"white" => 37,
@@ -60,10 +68,11 @@ class EchoBot < Bot
 			@color = "green"
 			if(@isInitiator)
 				logInfo()
-				@color = "white"
+				reset()
 			else
 				if(!@firstNeighbor.empty?)
 					sendMsg(@firstNeighbor, Actions::ECHO, {'maxId' => @maxId})
+					reset()
 				end
 				@color = "white"
 			end
