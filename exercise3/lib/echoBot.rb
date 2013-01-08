@@ -5,6 +5,7 @@ class EchoBot < Bot
 	def initialize(name, neighbors, id)
 		super(name, neighbors)
 		@id = id
+		@phase = 0
 		@maxId = @id
 		@color = "white"
 		@counter = 0
@@ -13,7 +14,6 @@ class EchoBot < Bot
 	end
 
 	def reset()
-		@maxId = @id
 		@color = "white"
 		@counter = 0
 		@firstNeighbor = ""
@@ -43,23 +43,24 @@ class EchoBot < Bot
 			when Actions::ECHO
 				actionChar = "E"
 		end
-		msg = "#{Time.now.strftime("%H:%M:%S")} | #{@name} #{char}#{actionChar}#{char} #{sender} | #{msg}"
+		msg = "#{Time.now.strftime("%H:%M:%S")} | #{@name} #{char}#{actionChar}#{char} #{sender} | #{msg.chomp}"
 		puts colorize(msg, @color)
 	end
 
-	def logInfo()
-		msg = "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | maxId: #{@maxId}"
+	def logInfo(text)
+		msg = "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | #{text}"
 		puts colorize(msg, @color)
 	end
 
 
-	def echo_algorithm(sender)
+	def echo_algorithm(requestHash)
+		sender = requestHash['sender']
 		@counter += 1
 		if(@color === "white")
 			@color = "red"
 			@neighbors.each{|neighbor|
 				if(neighbor != sender)
-					sendMsg(neighbor, Actions::EXPLORER, nil)
+					sendMsg(neighbor, Actions::EXPLORER, requestHash)
 				end
 			}
 			@firstNeighbor = sender
@@ -67,8 +68,20 @@ class EchoBot < Bot
 		if(@counter === @neighbors.size)
 			@color = "green"
 			if(@isInitiator)
-				logInfo()
+				logInfo("maxId: #{@maxId} phase: #{@phase}")
 				reset()
+				case @phase
+				when 1
+					@phase = 2
+					puts "PHASE 2"
+					propagate({'maxId' => @maxId})
+				when 2
+					@phase = 3
+					puts "PHASE 3"
+					propagate({'msg' => 'Max id has been propagated.'})
+				when 3
+					puts "THE END."
+				end
 			else
 				if(!@firstNeighbor.empty?)
 					sendMsg(@firstNeighbor, Actions::ECHO, {'maxId' => @maxId})
@@ -79,18 +92,33 @@ class EchoBot < Bot
 		end
 	end
 
-	# Action Handlers
-	
-	def init_echo_algorithm(requestHash)
+	def propagate(hashMap)
 		@color = "red"
 		@isInitiator = true
 		@neighbors.each{|neighbor|
-			sendMsg(neighbor, Actions::EXPLORER, nil)
+			sendMsg(neighbor, Actions::EXPLORER, hashMap)
 		}
+	end
+
+	# Action Handlers
+	
+	def init_echo_algorithm(requestHash)
+		@phase = 1
+		puts "PHASE 1"
+		propagate(nil)
 	end
 	
 	def explorer(requestHash)
-		echo_algorithm(requestHash['sender'])
+		maxId = requestHash['maxId']
+		msg = requestHash['msg']
+		if(maxId != nil)
+			@maxId = maxId
+			logInfo("maxId: #{@maxId}")
+		end
+		if(msg != nil)
+			logInfo("msg: #{msg}")
+		end
+		echo_algorithm(requestHash)
 	end
 
 	def echo(requestHash)
@@ -98,6 +126,6 @@ class EchoBot < Bot
 		if(@maxId < receivedMaxId)
 			@maxId = receivedMaxId
 		end
-		echo_algorithm(requestHash['sender'])
+		echo_algorithm(requestHash)
 	end
 end

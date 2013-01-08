@@ -27,8 +27,8 @@ class Bot
 		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} eee      | #{e}: #{e.backtrace}"
 	end
 
-	def logInfo()
-		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      |"
+	def logInfo(text)
+		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | #{text}"
 	end
 
 	def logKill()
@@ -45,7 +45,7 @@ class Bot
 			when Actions::MSGCOUNT
 				actionChar = "#"
 		end
-		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} #{char}#{actionChar}#{char} #{sender} | #{msg}"
+		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} #{char}#{actionChar}#{char} #{sender} | #{msg.chomp}"
 	end
 
 	def logSend(destination, action, msg)
@@ -64,8 +64,8 @@ class Bot
 		begin
 			socket = TCPSocket.open(@@HOST, destination)
 			msgHash = {'sender'=>@name, 'destination'=>destination, 'action'=>action, 'species'=> @@SPECIES}
-			if(additionalAttributes != nil)
-				msgHash = msgHash.merge(additionalAttributes)
+			if((defined? additionalAttributes) != nil && (additionalAttributes != nil) && (additionalAttributes.is_a? Hash))
+				msgHash = additionalAttributes.merge(msgHash)
 			end
 			msg = JSON.generate(msgHash)
 			socket.puts("#{msg}\r\n")
@@ -119,7 +119,6 @@ class Bot
 				sendMsg(neighbor, Actions::KILLYOURSELF, nil)
 			end
 		}
-		logInfo()
 		logKill()
 		abort()
 	end
