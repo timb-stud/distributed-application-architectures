@@ -1,5 +1,8 @@
 require 'lib/bot.rb'
 
+# A robot implementation of the ECHO Algorithm [http://de.wikipedia.org/wiki/Echo-Algorithmus]
+#
+
 class EchoBot < Bot
 
 	def initialize(name, neighbors, id)

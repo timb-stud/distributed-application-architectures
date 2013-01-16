@@ -2,7 +2,7 @@
 
 require 'lib/echoBot.rb'
 
-# A robot implementing the ECHO Algorithm [http://de.wikipedia.org/wiki/Echo-Algorithmus]
+# A robot implementation of the ECHO Algorithm [http://de.wikipedia.org/wiki/Echo-Algorithmus]
 #
 
 abort("Usage: #{__FILE__} ID [NEIGHBOR_IDs]") unless ARGV.size() > 0
