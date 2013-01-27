@@ -77,6 +77,7 @@ class Bot
 			logSend(destination, action, msg)
 		rescue StandardError => e
 			logError(e)
+			puts "d:#{destination} a:#{action} att:#{additionalAttributes}"
 			return false
 		ensure
 			if(socket != nil)

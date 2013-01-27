@@ -9,7 +9,7 @@ class MoneyBot < Bot
 	end
 
 	def logInfo()
-		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | #{@accountBalance}$"
+		puts "#{Time.now.strftime("%H:%M:%S")} | #{@name} iii      | #{@accountBalance}$ s:#{@sendMessagesCount} r:#{@receivedMessagesCount}"
 	end
 
 	def sendSnapshot(observer)
@@ -36,7 +36,6 @@ class MoneyBot < Bot
 	# Action Handlers
 	
 	def moneytransaction(requestHash)
-		sleep(4)
 		@receivedMessagesCount -= 1
 		snapshotObserver = requestHash['snapshotObserver']
 		if(@snapshotObserver == nil)
@@ -52,6 +51,7 @@ class MoneyBot < Bot
 		incomingMoneyAmount = Integer(requestHash['moneyAmount'])
 		@accountBalance += incomingMoneyAmount
 		logInfo()
+		sleep(4)
 		@moneyMsgCounter.times do
 			outgoingMoneyAmount = 1 + rand(10)
 			if(sendMsg(randomNeighbor(), Actions::MONEYTRANSACTION, {'moneyAmount'=> outgoingMoneyAmount, 'snapshotObserver' => @snapshotObserver}))
@@ -62,6 +62,8 @@ class MoneyBot < Bot
 	end
 
 	def snapshot(requestHash)
-		sendSnapshot(requestHash['sender'])
+		if(@snapshotObserver != requestHash['sender'])
+			sendSnapshot(requestHash['sender'])
+		end
 	end
 end
