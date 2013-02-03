@@ -1,0 +1,24 @@
+
+Distributed GCD Application
+---------------------------
+
+each node owns a value
+
+computes common gcd of all values while only 
+communicating with direct neighbours
+
+------------------------------------------------------------
+how to start gcd application with given number of nodes
+
+usage: 
+1) use gcd-starter to start a number of instances
+   of the python gcd-node.py script
+2) send a system application message to one of the
+   nodes, try something like
+
+   echo "SYST APPL" | nc localhost 50001
+
+   or use 
+   telnet localhost 50001 
+   instead
+

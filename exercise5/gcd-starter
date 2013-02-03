@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# $Id$
+#
+# author:  Damian Weber (dweber at htw-saarland.de)
+# date:    Wed Jan  9 21:46:30 CET 2013
+# license: see file LICENSE
+#
+# start gcd application with given number of nodes
+#
+# usage: 
+# 1) use gcd-starter to start a number of instances
+#    of the python gcd-node.py script
+# 2) send a system application message to one of the
+#    nodes, try something like
+#
+#    echo "SYST APPL" | nc localhost 50001
+#
+#    or use 
+#    telnet localhost 50001 
+#    instead
+# 
+
+if test $# -ne 1; then
+	echo "usage: $0 <number of nodes>"
+	exit 1
+fi
+
+n=$1
+
+if test `uname -s` = Linux; then
+	for x in `seq 1 $n `; do
+		./gcd-node.py  $n $x | tee gcd-node-${x}.out &
+	done
+fi
+
+if test `uname -s` = FreeBSD; then
+	for x in `jot $n 1`; do
+		./gcd-node.py  $n $x | tee gcd-node-${x}.out &
+	done
+fi
+
+if test `uname -s` = Darwin; then
+	for x in `jot $n 1`; do
+		./gcd-node.py  $n $x | tee gcd-node-${x}.out &
+	done
+fi
+
+exit 0
