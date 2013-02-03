@@ -5,8 +5,8 @@ abort("Usage: #{__FILE__} FILE") unless ARGV.size() >= 1
 
 fileNames = ARGV
 
-sent_APPL_sum = 0
-sent_Other_sum = 0
+sent_APPL_sum = 0.0
+sent_Other_sum = 0.0
 
 fileNames.each {|fileName|
 	file = File.new(fileName, "r")
@@ -22,7 +22,6 @@ fileNames.each {|fileName|
 				end
 			end
 		end
-		puts "#{fileName} APPL: #{sentAPPL} Other: #{sentOther} Sum: #{sentAPPL + sentOther}"
 		sent_APPL_sum += sentAPPL
 		sent_Other_sum += sentOther
 	rescue
@@ -32,4 +31,8 @@ fileNames.each {|fileName|
 	end
 }
 
-puts "OVERALL APPL: #{sent_APPL_sum} Other: #{sent_Other_sum} Sum: #{sent_APPL_sum + sent_Other_sum}"
+avg_APPL = sent_APPL_sum / fileNames.length
+avg_Other = sent_Other_sum / fileNames.length
+avg_Sum = (sent_APPL_sum + sent_Other_sum) / fileNames.length
+
+puts "#{fileNames.length} Nodes || APPL: #{avg_APPL} Other: #{avg_Other} Sum: #{avg_Sum}"
