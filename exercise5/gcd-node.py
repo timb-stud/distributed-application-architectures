@@ -29,6 +29,7 @@ import sys
 import time
 import random
 import re
+import time
 # -------------------------------------------------------------
 
 # port is PORT_BASE+id
@@ -276,6 +277,19 @@ def receive_message(connection,node):
 
 	ident=node.ident
 	incoming_message=connection.recv(MAX_MESSAGE_LENGTH)
+
+        #TIME MEASURE
+        print timeheader(ident),"RECV",incoming_message
+        time_string = " TIME "
+        time_pos = incoming_message.find(time_string)
+        if time_pos > -1:
+            current_time = time.clock()
+            msg_time = incoming_message[time_pos + len(time_string):]
+            incoming_message = incoming_message[:time_pos]
+            diff = current_time - float(msg_time)
+            print "TIME MEASURE:", diff
+
+
 	connection.close() 
 	print timeheader(ident),"RECV",incoming_message
 
@@ -287,6 +301,8 @@ def receive_message(connection,node):
 def send_to(node,nb,outgoing_message):
 	node_address = ('localhost', PORT_BASE+nb)
 	ident=node.ident
+
+        outgoing_message += " TIME " + str(time.clock())
 
 	print timeheader(ident),"SEND to",node_address,outgoing_message
 	client_connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -25,6 +25,20 @@ The more nodes are running the more likely it is that these two problems occur.
 40 Nodes || APPL: 14.375 Other: 214.175 Sum: 228.55
 40 Nodes || APPL: 19.875 Other: 222.975 Sum: 242.85
 
+
+# c)
+## 3 Nodes
+SUM: 0.246732, COUNTER: 54.0, AVG: 0.00456911111111111
+
+## 10 Nodes
+SUM: 4.569707, COUNTER: 678.0, AVG: 0.0067399808259587
+
+## 20 Nodes
+SUM: 21.596311, COUNTER: 2279.0, AVG: 0.00947622246599387
+
+## 40 Nodes
+SUM: 93.827462, COUNTER: 7156.0, AVG: 0.013111719116825
+
 # d)
 
 APPL = is not linear. I would need to test with more than 40 nodes to be more precise here. But unfortunately I don't get a GCD with 100 nodes or more.
