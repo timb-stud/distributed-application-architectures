@@ -20,12 +20,35 @@ The more nodes are running the more likely it is that these two problems occur.
 
 10 Nodes || APPL: 31.5 Other: 58.0 Sum: 89.5
 
+## 15 Nodes
+15 Nodes || APPL: 20.0 Other: 88.4 Sum: 108.4
+
+15 Nodes || APPL: 24.667 Other: 85.4 Sum: 110.066666666667
+
+15 Nodes || APPL: 22.333 Other: 83.1333333333333 Sum: 105.466666666667
+
+
 ## 20 Nodes
 20 Nodes || APPL: 35.25 Other: 117.0 Sum: 152.25
 
 20 Nodes || APPL: 31.25 Other: 115.95 Sum: 147.2
 
 20 Nodes || APPL: 32.5 Other: 113.1 Sum: 145.6
+
+## 25 Nodes
+25 Nodes || APPL: 18.8 Other: 142.84 Sum: 161.64
+
+25 Nodes || APPL: 34.8 Other: 145.2 Sum: 180.0
+
+25 Nodes || APPL: 29.8 Other: 138.84 Sum: 168.64
+
+
+## 30 Nodes
+30 Nodes || APPL: 23.5 Other: 171.866666666667 Sum: 195.366666666667
+
+30 Nodes || APPL: 29.833 Other: 163.666666666667 Sum: 193.5
+
+30 Nodes || APPL: 29.666 Other: 167.233333333333 Sum: 196.9
 
 ## 40 Nodes
 40 Nodes || APPL: 26.75 Other: 224.05 Sum: 250.8
