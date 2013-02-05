@@ -22,6 +22,7 @@ fileNames.each {|fileName|
 				end
 			end
 		end
+		puts "[#{fileName}] APPL: #{sentAPPL} Other: #{sentOther} Sum: #{sentAPPL + sentOther}"
 		sent_APPL_sum += sentAPPL
 		sent_Other_sum += sentOther
 	rescue
