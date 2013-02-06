@@ -6,12 +6,26 @@ The more nodes are running the more likely it is that these two problems occur.
 2. no GCD
 
 # b)
+## 3 Nodes
+3 Nodes || APPL: 6.666 Other: 14.0 Sum: 20.6666666666667
+
+3 Nodes || APPL: 6.666 Other: 11.0 Sum: 17.6666666666667
+
+3 Nodes || APPL: 11.333 Other: 12.0 Sum: 23.3333333333333
+
 ## 5 Nodes
 5 Nodes || APPL: 4.0 Other: 15.4 Sum: 19.4
 
 5 Nodes || APPL: 7.6 Other: 19.6 Sum: 27.2
 
 5 Nodes || APPL: 8.8 Other: 22.6 Sum: 31.4
+
+## 7 Nodes
+7 Nodes || APPL: 3.71428571428571 Other: 33.8571428571429 Sum: 37.5714285714286
+
+7 Nodes || APPL: 5.14285714285714 Other: 23.0 Sum: 28.1428571428571
+
+7 Nodes || APPL: 5.71428571428571 Other: 27.4285714285714 Sum: 33.1428571428571
 
 ## 10 Nodes
 10 Nodes || APPL: 32.5 Other: 52.6 Sum: 85.1
@@ -60,19 +74,22 @@ The more nodes are running the more likely it is that these two problems occur.
 
 # c)
 ## 3 Nodes
-SUM: 0.246732, COUNTER: 54.0, AVG: 0.00456911111111111
+SUM: 0.263960838317883, COUNTER: 77.0, AVG: 0.00342806283529718
 
 ## 10 Nodes
-SUM: 4.569707, COUNTER: 678.0, AVG: 0.0067399808259587
+SUM: 18.2281904220584, COUNTER: 851.0, AVG: 0.0214197302256855
 
 ## 20 Nodes
-SUM: 21.596311, COUNTER: 2279.0, AVG: 0.00947622246599387
+SUM: 154.235277414318, COUNTER: 2527.0, AVG: 0.0610349336819622
 
 ## 40 Nodes
-SUM: 93.827462, COUNTER: 7156.0, AVG: 0.013111719116825
+SUM: 6105.47464466105, COUNTER: 9033.0, AVG: 0.675907743237136
 
 # d)
 
-APPL = is not linear. I would need to test with more than 40 nodes to be more precise here. But unfortunately I don't get a GCD with 100 nodes or more.
+APPL = 
+
+7: n < 10
+30: n > 10
 
 Other = n * 5
