@@ -86,10 +86,8 @@ SUM: 154.235277414318, COUNTER: 2527.0, AVG: 0.0610349336819622
 SUM: 6105.47464466105, COUNTER: 9033.0, AVG: 0.675907743237136
 
 # d)
+If n < 10, every node sends approximately 7 APPL messages.
 
-APPL = 
+If n > 10, every node sends approximately 30 APPL messages.
 
-7: n < 10
-30: n > 10
-
-Other = n * 5
+Every node sends approximately (n * 5) Other messages.
