@@ -88,6 +88,6 @@ SUM: 6105.47464466105, COUNTER: 9033.0, AVG: 0.675907743237136
 # d)
 If n < 10, every node sends approximately 7 APPL messages.
 
-If n > 10, every node sends approximately 30 APPL messages.
+If n >= 10, every node sends approximately 30 APPL messages.
 
 Every node sends approximately (n * 5) Other messages.
