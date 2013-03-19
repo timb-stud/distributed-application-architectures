@@ -21,36 +21,22 @@ class GgtBot < Bot
 
 	# Action Handlers
 	
+
 	def ggt(requestHash)
 		logInfo()
 		reqVal = Integer(requestHash['value'])
-		if(0 < reqVal && reqVal < @value)
-			newVal = @value % reqVal
-			if(newVal != 0)
-				@value = newVal
-				logInfo()
-				sendToAllNeighbors(@value)
-			else
-				@value = reqVal
-				logInfo()
-			end
-		else
-			if(reqVal > @value)
-				newVal = reqVal % @value
-				if(newVal != 0 && newVal != @value)
-					if(newVal != 0)
-						@value = newVal
-						logInfo()
-						sendToAllNeighbors(@value)
-					else
-						@value = reqVal
-						logInfo()
-					end
-				end
-			end
+		if(reqVal < @value)
+			@value = ((@value -1) % reqVal) + 1
+			logInfo()
+			sendToAllNeighbors(@value)
+		end
+		if(reqVal > @value)
+			@value = ((reqVal -1) % @value) + 1
+			logInfo()
+			sendToAllNeighbors(@value)
 		end
 	end
-
+	
 	def startGgt(requestHash)
 		sendToAllNeighbors(@value)
 	end
